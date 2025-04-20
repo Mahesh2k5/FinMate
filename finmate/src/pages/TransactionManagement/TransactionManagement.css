@@ -1,0 +1,391 @@
+/* Main container */
+.tm-container {
+  display: flex;
+  min-height: 100vh;
+  background-color: #252525;
+  color: white;
+  font-family: 'Segoe UI', Arial, sans-serif;
+}
+
+/* Sidebar styles */
+.tm-sidebar {
+  width: 150px;
+  background-color: #333;
+  padding: 20px;
+  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+  position: relative;
+  z-index: 10;
+}
+
+.tm-app-title {
+  display: flex;
+  align-items: center;
+  font-size: 1.2rem;
+  margin-bottom: 30px;
+  font-weight: bold;
+}
+
+.tm-icon {
+  margin-right: 10px;
+  font-size: 1.4rem;
+}
+
+.tm-categories h2 {
+  font-size: 1.2rem;
+  margin-bottom: 15px;
+}
+
+.tm-categories ul {
+  list-style-type: none;
+  padding: 0;
+  margin-bottom: 20px;
+}
+
+.tm-categories li {
+  padding: 8px 0;
+  cursor: pointer;
+  transition: color 0.3s;
+}
+
+.tm-categories li:hover {
+  color: #ff6b6b;
+}
+
+.tm-add-category-btn {
+  width: 100%;
+  padding: 10px;
+  background-color: #e74c3c;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.tm-add-category-btn:hover {
+  background-color: #c0392b;
+}
+
+/* Main content styles */
+.tm-main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Header and navigation */
+.tm-header {
+  padding: 15px 30px;
+  background-color: #333;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.tm-nav {
+  display: flex;
+  gap: 20px;
+}
+
+.tm-nav-link {
+  color: white;
+  text-decoration: none;
+  padding: 5px 0;
+  transition: color 0.3s;
+}
+
+.tm-nav-link:hover {
+  color: #ff6b6b;
+}
+
+/* Content area */
+.tm-content {
+  flex: 1;
+  padding: 20px 30px;
+}
+
+.tm-section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.tm-section-header h2 {
+  font-size: 1.5rem;
+  font-weight: 500;
+}
+
+.tm-add-transaction-btn {
+  padding: 8px 16px;
+  background-color: white;
+  color: #252525;
+  border: none;
+  border-radius: 20px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: background-color 0.3s;
+}
+
+.tm-add-transaction-btn:hover {
+  background-color: #f1f1f1;
+}
+
+/* Section styling */
+.tm-section {
+  background-color: #333;
+  border-radius: 10px;
+  padding: 20px;
+  margin-bottom: 20px;
+}
+
+.tm-section-title {
+  font-size: 1.2rem;
+  margin-bottom: 20px;
+  font-weight: 500;
+}
+
+/* Transaction cards */
+.tm-transactions-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 15px;
+}
+
+.tm-transaction-card {
+  background-color: #404040;
+  border-radius: 10px;
+  padding: 15px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  position: relative;
+  height: 150px;
+}
+
+.tm-transaction-card.income {
+  border-left: 4px solid #27ae60;
+}
+
+.tm-transaction-card.expense {
+  border-left: 4px solid #e74c3c;
+}
+
+.tm-transaction-details h4 {
+  margin: 0 0 5px 0;
+  font-size: 1.1rem;
+}
+
+.tm-date {
+  color: #bbb;
+  font-size: 0.85rem;
+  margin: 5px 0;
+}
+
+.tm-amount {
+  font-size: 1.2rem;
+  font-weight: bold;
+  margin: 5px 0;
+}
+
+.tm-category {
+  color: #999;
+  font-size: 0.85rem;
+  margin: 5px 0;
+}
+
+.tm-edit-btn {
+  background-color: #e74c3c;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  padding: 5px 10px;
+  cursor: pointer;
+  position: absolute;
+  bottom: 15px;
+  right: 15px;
+  transition: background-color 0.3s;
+}
+
+.tm-edit-btn:hover {
+  background-color: #c0392b;
+}
+
+/* Recurring transaction section */
+.tm-recurring-container {
+  padding: 10px 0;
+}
+
+.tm-recurring-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+/* Toggle switch */
+.tm-switch {
+  position: relative;
+  display: inline-block;
+  width: 50px;
+  height: 24px;
+}
+
+.tm-switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.tm-slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #444;
+  transition: .4s;
+  border-radius: 34px;
+}
+
+.tm-slider:before {
+  position: absolute;
+  content: "";
+  height: 16px;
+  width: 16px;
+  left: 4px;
+  bottom: 4px;
+  background-color: white;
+  transition: .4s;
+  border-radius: 50%;
+}
+
+input:checked + .tm-slider {
+  background-color: #e74c3c;
+}
+
+input:checked + .tm-slider:before {
+  transform: translateX(26px);
+}
+
+/* Add Transaction Form */
+.tm-add-form-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.tm-add-form {
+  background-color: #333;
+  border-radius: 10px;
+  padding: 25px;
+  width: 500px;
+  max-width: 90%;
+}
+
+.tm-add-form h3 {
+  margin-top: 0;
+  margin-bottom: 20px;
+  font-size: 1.3rem;
+}
+
+.tm-form-row {
+  display: flex;
+  gap: 20px;
+  margin-bottom: 15px;
+}
+
+.tm-form-group {
+  flex: 1;
+}
+
+.tm-form-group label {
+  display: block;
+  margin-bottom: 5px;
+  font-size: 0.9rem;
+}
+
+.tm-form-group input,
+.tm-form-group select {
+  width: 100%;
+  padding: 8px 12px;
+  border-radius: 5px;
+  border: none;
+  background-color: #444;
+  color: white;
+}
+
+.tm-radio-group {
+  display: flex;
+  gap: 15px;
+}
+
+.tm-radio {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
+
+.tm-radio input {
+  margin-right: 5px;
+}
+
+.tm-form-buttons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.tm-submit-btn {
+  padding: 8px 16px;
+  background-color: #e74c3c;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.tm-cancel-btn {
+  padding: 8px 16px;
+  background-color: #666;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.tm-submit-btn:hover {
+  background-color: #c0392b;
+}
+
+.tm-cancel-btn:hover {
+  background-color: #555;
+}
+
+/* Inline edit buttons for categories */
+.edit-save-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #27ae60;
+  margin-right: 4px;
+  font-size: 1rem;
+  padding: 0;
+}
+
+.edit-cancel-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #e74c3c;
+  font-size: 1rem;
+  padding: 0;
+}

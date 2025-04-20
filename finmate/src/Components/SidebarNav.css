@@ -1,0 +1,92 @@
+.sidebar-nav {
+  height: calc(100vh - 64px);
+  background: #222;
+  position: fixed;
+  top: 64px;
+  left: 0;
+  z-index: 200;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  transition: width 0.3s;
+  width: 180px;
+}
+
+.sidebar-nav.collapsed {
+  width: 70px;
+  align-items: flex-start;
+}
+
+.sidebar-nav.collapsed .sidebar-toggle {
+  margin-right: 0;
+  align-self: center;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+.sidebar-nav.collapsed .sidebar-links {
+  width: 100%;
+}
+
+.sidebar-nav.collapsed .sidebar-link {
+  width: 100%;
+  padding: 14px 8px;
+  justify-content: center;
+}
+
+.sidebar-toggle {
+  background: none;
+  border: none;
+  color: #fff;
+  font-size: 1.5rem;
+  margin: 16px 0;
+  cursor: pointer;
+  align-self: center;
+  margin-right: 12px;
+}
+
+.sidebar-links {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  margin-top: 32px;
+}
+
+.sidebar-link {
+  color: #fff;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  padding: 14px 24px;
+  gap: 16px;
+  font-size: 1.1rem;
+  transition: background 0.2s, color 0.2s;
+  border-radius: 6px;
+  margin: 4px 0;
+}
+
+.sidebar-link .sidebar-icon {
+  size: 10rem;
+  font-size: 1rem;
+}
+
+.sidebar-link.active,
+.sidebar-link:hover {
+  background: #e74c3c;
+  color: #fff;
+}
+
+.sidebar-nav.collapsed .sidebar-link span {
+  display: none;
+}
+
+/* Fix white space and increase icon size in collapsed state */
+.sidebar-nav.collapsed .sidebar-link {
+  padding: 14px 1%;
+  justify-content: center;
+}
+
+.sidebar-nav.collapsed .sidebar-link .sidebar-icon {
+  font-size: 1.5rem;
+}
