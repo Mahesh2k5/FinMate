@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-const TransactionSchema = new mongoose.Schema({
+const CategorySchema = new mongoose.Schema({
   user: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
@@ -10,24 +10,18 @@ const TransactionSchema = new mongoose.Schema({
     type: String,
     required: true
   },
-  amount: {
-    type: Number,
-    required: true
-  },
   type: {
     type: String,
     required: true,
     enum: ['income', 'expense']
   },
-  category: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Category',
-    required: true
-  },
-  date: {
+  createdAt: {
     type: Date,
     default: Date.now
   }
 });
 
-module.exports = mongoose.model('Transaction', TransactionSchema);
+// Ensure unique category names per user and type
+CategorySchema.index({ user: 1, name: 1, type: 1 }, { unique: true });
+
+module.exports = mongoose.model('Category', CategorySchema); 

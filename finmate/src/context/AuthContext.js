@@ -22,7 +22,8 @@ const authReducer = (state, action) => {
         ...state,
         user: action.payload,
         isAuthenticated: true,
-        loading: false
+        loading: false,
+        error: null
       };
     case 'LOGIN_FAIL':
     case 'REGISTER_FAIL':
@@ -40,6 +41,11 @@ const authReducer = (state, action) => {
         ...state,
         error: null
       };
+    case 'SET_LOADING':
+      return {
+        ...state,
+        loading: action.payload
+      };
     default:
       return state;
   }
@@ -49,11 +55,20 @@ const authReducer = (state, action) => {
 export const AuthProvider = ({ children }) => {
   const [state, dispatch] = useReducer(authReducer, initialState);
 
-  React.useEffect(() => {
+  // Validate token and get user data
+  const validateToken = async (token) => {
+    try {
+      const res = await api.get('/auth/validate');
+      dispatch({ type: 'LOGIN_SUCCESS', payload: res.data });
+    } catch (error) {
+      dispatch({ type: 'LOGOUT' });
+    }
+  };
+
+  useEffect(() => {
     const token = localStorage.getItem('token');
     if (token) {
-      // Optionally, validate token here with an API call
-      dispatch({ type: 'LOGIN_SUCCESS', payload: { token } });
+      validateToken(token);
     } else {
       dispatch({ type: 'LOGOUT' });
     }
@@ -61,27 +76,34 @@ export const AuthProvider = ({ children }) => {
 
   // Register user
   const register = async (formData) => {
+    dispatch({ type: 'SET_LOADING', payload: true });
     try {
       const res = await api.post('/auth/register', formData);
-      dispatch({ type: 'REGISTER_SUCCESS', payload: res.data });
+      // Do not auto-login after registration
+      // dispatch({ type: 'REGISTER_SUCCESS', payload: res.data });
+      return res.data;
     } catch (error) {
       dispatch({ 
         type: 'REGISTER_FAIL', 
         payload: error.response?.data?.message || 'Registration failed' 
       });
+      throw error;
     }
   };
 
   // Login user
   const login = async (formData) => {
+    dispatch({ type: 'SET_LOADING', payload: true });
     try {
       const res = await api.post('/auth/login', formData);
       dispatch({ type: 'LOGIN_SUCCESS', payload: res.data });
+      return res.data;
     } catch (error) {
       dispatch({ 
         type: 'LOGIN_FAIL', 
         payload: error.response?.data?.message || 'Invalid credentials' 
       });
+      throw error;
     }
   };
 

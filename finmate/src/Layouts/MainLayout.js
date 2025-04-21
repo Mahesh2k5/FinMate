@@ -1,10 +1,15 @@
 import React, { useState } from "react";
-import SidebarNav from "../Components/SidebarNav";
-import Navbar from "../Components/Navbar";
-import Footer from "../Components/Footer";
-import { Outlet } from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
+import SidebarNav from "../components/SidebarNav";
+import Navbar from "../components/Navbar";
+import Footer from "../components/Footer";
+import Dashboard from "../pages/Dashboard/Dashboard";
+import TransactionManagement from "../pages/TransactionManagement/TransactionManagement";
+import Settings from "../pages/Settings/Settings";
+import Budget from "../pages/Budget/Budget";
+import TransactionHistory from "../pages/TransactionHistory/TransactionHistory";
 
-function MainLayout() {
+function MainLayout({ children }) {
   const [expanded, setExpanded] = useState(true);
 
   return (
@@ -21,7 +26,7 @@ function MainLayout() {
             overflowX: "hidden"
           }}
         >
-          <Outlet />
+          {children}
           <Footer />
         </div>
       </div>
