@@ -1,8 +1,18 @@
 import React from "react";
 import { FaUser, FaCog, FaSignOutAlt, FaMoon, FaBell, FaLock } from "react-icons/fa";
+import { useAuth } from "../../context/AuthContext";
+import { useNavigate } from "react-router-dom";
 import "./Settings.css";
 
 function Settings() {
+  const { logout } = useAuth();
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    logout();
+    navigate("/login");
+  };
+
   return (
     <div className="settings-container">
       <h2>Settings</h2>
@@ -52,7 +62,7 @@ function Settings() {
             <FaSignOutAlt className="settings-icon" />
             <h3>Account</h3>
           </div>
-          <button className="settings-btn">Logout</button>
+          <button className="settings-btn" onClick={handleLogout}>Logout</button>
         </div>
       </div>
     </div>

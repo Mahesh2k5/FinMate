@@ -1,5 +1,5 @@
 import React, { createContext, useState, useContext, useEffect } from 'react';
-import axios from 'axios';
+import api from '../services/api';
 import { useAuth } from './AuthContext';
 
 const CategoryContext = createContext();
@@ -9,21 +9,24 @@ export const CategoryProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
   const { token } = useAuth();
 
-  const config = {
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${token}`
-    }
-  };
-
   // Fetch categories
   const fetchCategories = async () => {
     try {
-      const res = await axios.get('/api/categories', config);
+      const token = localStorage.getItem('token');
+      console.log('Current token:', token ? 'Present' : 'Missing');
+      
+      if (!token) {
+        console.error('No authentication token found');
+        setLoading(false);
+        return;
+      }
+
+      const res = await api.get('/categories');
+      console.log('Categories API response:', res.data);
       setCategories(res.data);
       setLoading(false);
     } catch (err) {
-      console.error('Error fetching categories:', err);
+      console.error('Error fetching categories:', err.response || err);
       setLoading(false);
     }
   };
@@ -31,7 +34,7 @@ export const CategoryProvider = ({ children }) => {
   // Add category
   const addCategory = async (name, type) => {
     try {
-      const res = await axios.post('/api/categories', { name, type }, config);
+      const res = await api.post('/categories', { name, type });
       setCategories([...categories, res.data]);
       return res.data;
     } catch (err) {
@@ -43,7 +46,7 @@ export const CategoryProvider = ({ children }) => {
   // Update category
   const updateCategory = async (id, name, type) => {
     try {
-      const res = await axios.put(`/api/categories/${id}`, { name, type }, config);
+      const res = await api.put(`/categories/${id}`, { name, type });
       setCategories(categories.map(cat => 
         cat._id === id ? res.data : cat
       ));
@@ -57,7 +60,7 @@ export const CategoryProvider = ({ children }) => {
   // Delete category
   const deleteCategory = async (id) => {
     try {
-      await axios.delete(`/api/categories/${id}`, config);
+      await api.delete(`/categories/${id}`);
       setCategories(categories.filter(cat => cat._id !== id));
     } catch (err) {
       console.error('Error deleting category:', err);

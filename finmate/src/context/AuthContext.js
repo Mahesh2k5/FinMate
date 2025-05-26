@@ -57,10 +57,18 @@ export const AuthProvider = ({ children }) => {
 
   // Validate token and get user data
   const validateToken = async (token) => {
+    if (!token) {
+      dispatch({ type: 'LOGOUT' });
+      return;
+    }
+
     try {
-      const res = await api.get('/auth/validate');
-      dispatch({ type: 'LOGIN_SUCCESS', payload: res.data });
+      // Instead of validating the token separately, we'll try to get user data
+      // This assumes your backend will return 401 if the token is invalid
+      const res = await api.get('/auth/user');
+      dispatch({ type: 'LOGIN_SUCCESS', payload: { ...res.data, token } });
     } catch (error) {
+      console.error('Token validation error:', error);
       dispatch({ type: 'LOGOUT' });
     }
   };
@@ -68,6 +76,8 @@ export const AuthProvider = ({ children }) => {
   useEffect(() => {
     const token = localStorage.getItem('token');
     if (token) {
+      // Set the token in the API instance
+      api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
       validateToken(token);
     } else {
       dispatch({ type: 'LOGOUT' });
@@ -79,8 +89,7 @@ export const AuthProvider = ({ children }) => {
     dispatch({ type: 'SET_LOADING', payload: true });
     try {
       const res = await api.post('/auth/register', formData);
-      // Do not auto-login after registration
-      // dispatch({ type: 'REGISTER_SUCCESS', payload: res.data });
+      dispatch({ type: 'REGISTER_SUCCESS', payload: res.data });
       return res.data;
     } catch (error) {
       dispatch({ 
@@ -96,6 +105,8 @@ export const AuthProvider = ({ children }) => {
     dispatch({ type: 'SET_LOADING', payload: true });
     try {
       const res = await api.post('/auth/login', formData);
+      // Set the token in the API instance immediately after login
+      api.defaults.headers.common['Authorization'] = `Bearer ${res.data.token}`;
       dispatch({ type: 'LOGIN_SUCCESS', payload: res.data });
       return res.data;
     } catch (error) {
@@ -109,6 +120,8 @@ export const AuthProvider = ({ children }) => {
 
   // Logout user
   const logout = () => {
+    // Clear the Authorization header
+    delete api.defaults.headers.common['Authorization'];
     dispatch({ type: 'LOGOUT' });
   };
 

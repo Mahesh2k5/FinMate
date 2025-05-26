@@ -1,5 +1,6 @@
 import React, { createContext, useReducer, useContext, useEffect } from 'react';
 import api from '../services/api';
+import { useAuth } from './AuthContext';
 
 // Initial state
 const initialState = {
@@ -82,15 +83,19 @@ const transactionReducer = (state, action) => {
   }
 };
 
-// Provider component
 export const TransactionProvider = ({ children }) => {
   const [state, dispatch] = useReducer(transactionReducer, initialState);
+  const { token } = useAuth();
 
-  // Fetch transactions on mount
+  // Fetch transactions and goals when token changes
   useEffect(() => {
+    if (!token) return;
+
     const fetchTransactions = async () => {
       try {
-        const res = await api.get('/transactions');
+        const res = await api.get('/transactions', {
+          headers: { Authorization: `Bearer ${token}` }
+        });
         dispatch({ type: 'SET_TRANSACTIONS', payload: res.data });
         dispatch({ type: 'CALCULATE_TOTALS' });
       } catch (error) {
@@ -100,7 +105,9 @@ export const TransactionProvider = ({ children }) => {
     
     const fetchGoals = async () => {
       try {
-        const res = await api.get('/budgets');
+        const res = await api.get('/budgets', {
+          headers: { Authorization: `Bearer ${token}` }
+        });
         dispatch({ type: 'SET_GOALS', payload: res.data });
       } catch (error) {
         dispatch({ type: 'SET_ERROR', payload: error.response?.data?.message || 'Error fetching goals' });
@@ -109,7 +116,7 @@ export const TransactionProvider = ({ children }) => {
 
     fetchTransactions();
     fetchGoals();
-  }, []);
+  }, [token]);
 
   // Add transaction
   const addTransaction = async (transaction) => {

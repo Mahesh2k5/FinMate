@@ -13,6 +13,8 @@ const TransactionManagement = () => {
   const [editingCategoryValue, setEditingCategoryValue] = useState('');
   const [editingCategoryType, setEditingCategoryType] = useState('');
   const [newCategory, setNewCategory] = useState({ name: '', type: 'expense' });
+  const [categoryError, setCategoryError] = useState(null);
+  const [categoryLoading, setCategoryLoading] = useState(false);
   const [transactionForm, setTransactionForm] = useState({
     name: '',
     amount: '',
@@ -21,13 +23,26 @@ const TransactionManagement = () => {
     date: new Date().toISOString().split('T')[0]
   });
 
+  console.log('All categories:', categories);
+  
+  const expenseCategories = categories.filter(cat => cat.type === 'expense');
+  const incomeCategories = categories.filter(cat => cat.type === 'income');
+  
+  console.log('Expense categories:', expenseCategories);
+  console.log('Income categories:', incomeCategories);
+
   const handleAddCategory = async (e) => {
     e.preventDefault();
+    setCategoryError(null);
+    setCategoryLoading(true);
     try {
       await addCategory(newCategory.name, newCategory.type);
       setNewCategory({ name: '', type: 'expense' });
     } catch (err) {
       console.error('Error adding category:', err);
+      setCategoryError('Failed to add category. Please try again.');
+    } finally {
+      setCategoryLoading(false);
     }
   };
 
@@ -74,9 +89,6 @@ const TransactionManagement = () => {
       console.error('Error adding transaction:', err);
     }
   };
-
-  const expenseCategories = categories.filter(cat => cat.type === 'expense');
-  const incomeCategories = categories.filter(cat => cat.type === 'income');
 
   return (
     <div className="tm-container">
@@ -170,6 +182,7 @@ const TransactionManagement = () => {
 
           <form onSubmit={handleAddCategory} className="tm-add-category-form">
             <h4>Add New Category</h4>
+            {categoryError && <p className="error-message">{categoryError}</p>}
             <input
               type="text"
               placeholder="Category Name"
@@ -184,7 +197,9 @@ const TransactionManagement = () => {
               <option value="expense">Expense</option>
               <option value="income">Income</option>
             </select>
-            <button type="submit">Add Category</button>
+            <button type="submit" disabled={categoryLoading}>
+              {categoryLoading ? 'Adding...' : 'Add Category'}
+            </button>
           </form>
         </div>
 
@@ -201,7 +216,7 @@ const TransactionManagement = () => {
                 </div>
                 <div className="tm-transaction-details">
                   <p>Amount: ${transaction.amount}</p>
-                  <p>Category: {transaction.category.name}</p>
+                  <p>Category: {transaction.category ? transaction.category.name : 'N/A'}</p>
                   <p>Date: {new Date(transaction.date).toLocaleDateString()}</p>
                 </div>
               </div>

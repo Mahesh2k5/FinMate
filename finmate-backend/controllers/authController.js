@@ -1,5 +1,7 @@
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
+const Category = require('../models/Category');
+const Budget = require('../models/Budget');
 
 // Generate JWT token
 const generateToken = (id) => {
@@ -28,6 +30,36 @@ const registerUser = async (req, res) => {
     });
 
     if (user) {
+      // Create default categories for the user
+      const defaultCategories = [
+        { name: 'Food', type: 'expense', user: user._id },
+        { name: 'Transport', type: 'expense', user: user._id },
+        { name: 'Entertainment', type: 'expense', user: user._id },
+        { name: 'Utilities', type: 'expense', user: user._id },
+        { name: 'Others', type: 'expense', user: user._id },
+        { name: 'Salary', type: 'income', user: user._id },
+        { name: 'Freelance', type: 'income', user: user._id },
+        { name: 'Investments', type: 'income', user: user._id }
+      ];
+      try {
+        await Category.insertMany(defaultCategories);
+      } catch (err) {
+        console.error('Error creating default categories:', err);
+      }
+
+      // Create default budgets for the user (empty or zero)
+      const defaultBudgets = [
+        { category: 'Food', amount: 0, user: user._id },
+        { category: 'Transport', amount: 0, user: user._id },
+        { category: 'Salary', amount: 0, user: user._id },
+        { category: 'Freelance', amount: 0, user: user._id }
+      ];
+      try {
+        await Budget.insertMany(defaultBudgets);
+      } catch (err) {
+        console.error('Error creating default budgets:', err);
+      }
+
       res.status(201).json({
         _id: user._id,
         name: user.name,
