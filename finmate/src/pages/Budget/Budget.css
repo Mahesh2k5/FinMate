@@ -48,10 +48,18 @@
 }
 
 .budget-goal-card {
-  background: #2d2d2d;
+  display: flex;
+  flex-direction: column;
+  border-radius: 12px;
+  height: fit-content;
+  gap: 20px;
+}
+
+.goal-card-container{
   border-radius: 12px;
   padding: 1.5rem;
   height: fit-content;
+  background: #2d2d2d;
 }
 
 .budget-goal-card h2 {
@@ -62,6 +70,8 @@
 
 .form-group {
   margin-bottom: 1.5rem;
+  display: flex;
+  flex-direction: column;
 }
 
 .form-group label {

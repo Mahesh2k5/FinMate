@@ -7,11 +7,15 @@ function Navbar() {
   return (
     <header className="navbar">
       <div className="navbar-left">
-        <img src={logo} alt="FinMate Logo" className="navbar-logo-img" />
-        <span className="navbar-title">FinMate</span>
+        <Link to="/">
+          <img src={logo} alt="FinMate Logo" className="navbar-logo-img" />
+          <span className="navbar-title">FinMate</span>
+        </Link>
       </div>
       <nav className="navbar-links">
-        <Link to="/" className="nav-link">Home</Link>
+        <Link to="/" className="nav-link">Dashboard</Link>
+        <Link to="/transactionhistory" className="nav-link">Transactions</Link>
+        <Link to="/settings" className="nav-link">Settings</Link>
       </nav>
     </header>
   );

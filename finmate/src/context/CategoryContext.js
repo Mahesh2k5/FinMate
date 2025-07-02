@@ -1,78 +1,42 @@
-import React, { createContext, useState, useContext, useEffect } from 'react';
-import api from '../services/api';
-import { useAuth } from './AuthContext';
+import React, { createContext, useState, useContext } from 'react';
+
+const mockCategories = [
+  { _id: '1', name: 'Food', type: 'expense' },
+  { _id: '2', name: 'Transport', type: 'expense' },
+  { _id: '3', name: 'Salary', type: 'income' },
+  { _id: '4', name: 'Freelance', type: 'income' }
+];
 
 const CategoryContext = createContext();
 
 export const CategoryProvider = ({ children }) => {
-  const [categories, setCategories] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const { token } = useAuth();
-
-  // Fetch categories
-  const fetchCategories = async () => {
-    try {
-      const token = localStorage.getItem('token');
-      console.log('Current token:', token ? 'Present' : 'Missing');
-      
-      if (!token) {
-        console.error('No authentication token found');
-        setLoading(false);
-        return;
-      }
-
-      const res = await api.get('/categories');
-      console.log('Categories API response:', res.data);
-      setCategories(res.data);
-      setLoading(false);
-    } catch (err) {
-      console.error('Error fetching categories:', err.response || err);
-      setLoading(false);
-    }
-  };
+  const [categories, setCategories] = useState(mockCategories);
+  const [loading, setLoading] = useState(false);
 
   // Add category
   const addCategory = async (name, type) => {
-    try {
-      const res = await api.post('/categories', { name, type });
-      setCategories([...categories, res.data]);
-      return res.data;
-    } catch (err) {
-      console.error('Error adding category:', err);
-      throw err;
-    }
+    const newCategory = { _id: Date.now().toString(), name, type };
+    setCategories([...categories, newCategory]);
+    return newCategory;
   };
 
   // Update category
   const updateCategory = async (id, name, type) => {
-    try {
-      const res = await api.put(`/categories/${id}`, { name, type });
-      setCategories(categories.map(cat => 
-        cat._id === id ? res.data : cat
-      ));
-      return res.data;
-    } catch (err) {
-      console.error('Error updating category:', err);
-      throw err;
-    }
+    setCategories(categories.map(cat =>
+      cat._id === id ? { ...cat, name, type } : cat
+    ));
+    return { _id: id, name, type };
   };
 
   // Delete category
   const deleteCategory = async (id) => {
-    try {
-      await api.delete(`/categories/${id}`);
-      setCategories(categories.filter(cat => cat._id !== id));
-    } catch (err) {
-      console.error('Error deleting category:', err);
-      throw err;
-    }
+    setCategories(categories.filter(cat => cat._id !== id));
   };
 
-  useEffect(() => {
-    if (token) {
-      fetchCategories();
-    }
-  }, [token]);
+  // Mock fetchCategories
+  const fetchCategories = async () => {
+    setLoading(false);
+  };
 
   return (
     <CategoryContext.Provider value={{

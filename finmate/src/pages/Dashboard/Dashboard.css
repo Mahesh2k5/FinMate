@@ -154,10 +154,12 @@
   
   .trend.positive {
     color: #00b894;
+    justify-content: center;
   }
   
   .trend.negative {
     color: #d63031;
+    justify-content: center;
   }
   
   .dashboard-charts {
@@ -168,16 +170,21 @@
   }
   
   .chart-container {
+    display: grid;
     background: #2d2d2d;
     padding: 1.5rem;
     border-radius: 10px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    max-height: 500px;
+    grid-template-rows: 60px;
+    justify-content: center;
+    align-items: center;
   }
   
-  .chart-container h2 {
+  .chart-container h3 {
     color: #fff;
     font-size: 1.1rem;
-    margin-bottom: 1rem;
+    margin-bottom: 0px;
   }
   
   .dashboard-content {

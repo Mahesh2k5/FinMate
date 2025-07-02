@@ -1,22 +1,24 @@
-import React, { createContext, useReducer, useContext, useEffect } from 'react';
-import api from '../services/api';
-import { useAuth } from './AuthContext';
+import React, { createContext, useReducer, useContext } from 'react';
 
-// Initial state
 const initialState = {
-  transactions: [],
-  goals: [],
-  income: 0,
-  expense: 0,
-  balance: 0,
-  loading: true,
+  transactions: [
+    { _id: 't1', name: 'Grocery Shopping', amount: 50, type: 'expense', category: '1', date: new Date().toISOString() },
+    { _id: 't2', name: 'Bus Ticket', amount: 10, type: 'expense', category: '2', date: new Date().toISOString() },
+    { _id: 't3', name: 'Monthly Salary', amount: 2000, type: 'income', category: '3', date: new Date().toISOString() }
+  ],
+  goals: [
+    { _id: 'g1', category: '1', amount: 300 },
+    { _id: 'g2', category: '2', amount: 100 }
+  ],
+  income: 2000,
+  expense: 60,
+  balance: 1940,
+  loading: false,
   error: null
 };
 
-// Create context
 const TransactionContext = createContext(initialState);
 
-// Reducer
 const transactionReducer = (state, action) => {
   switch (action.type) {
     case 'SET_TRANSACTIONS':
@@ -43,7 +45,6 @@ const transactionReducer = (state, action) => {
       };
     case 'SET_GOAL':
       const existingGoalIndex = state.goals.findIndex(g => g.category === action.payload.category);
-      
       let updatedGoals;
       if (existingGoalIndex >= 0) {
         updatedGoals = [...state.goals];
@@ -51,7 +52,6 @@ const transactionReducer = (state, action) => {
       } else {
         updatedGoals = [...state.goals, action.payload];
       }
-      
       return {
         ...state,
         goals: updatedGoals
@@ -65,7 +65,6 @@ const transactionReducer = (state, action) => {
         }
         return acc;
       }, { income: 0, expense: 0 });
-      
       return {
         ...state,
         income,
@@ -85,69 +84,24 @@ const transactionReducer = (state, action) => {
 
 export const TransactionProvider = ({ children }) => {
   const [state, dispatch] = useReducer(transactionReducer, initialState);
-  const { token } = useAuth();
-
-  // Fetch transactions and goals when token changes
-  useEffect(() => {
-    if (!token) return;
-
-    const fetchTransactions = async () => {
-      try {
-        const res = await api.get('/transactions', {
-          headers: { Authorization: `Bearer ${token}` }
-        });
-        dispatch({ type: 'SET_TRANSACTIONS', payload: res.data });
-        dispatch({ type: 'CALCULATE_TOTALS' });
-      } catch (error) {
-        dispatch({ type: 'SET_ERROR', payload: error.response?.data?.message || 'Error fetching transactions' });
-      }
-    };
-    
-    const fetchGoals = async () => {
-      try {
-        const res = await api.get('/budgets', {
-          headers: { Authorization: `Bearer ${token}` }
-        });
-        dispatch({ type: 'SET_GOALS', payload: res.data });
-      } catch (error) {
-        dispatch({ type: 'SET_ERROR', payload: error.response?.data?.message || 'Error fetching goals' });
-      }
-    };
-
-    fetchTransactions();
-    fetchGoals();
-  }, [token]);
 
   // Add transaction
   const addTransaction = async (transaction) => {
-    try {
-      const res = await api.post('/transactions', transaction);
-      dispatch({ type: 'ADD_TRANSACTION', payload: res.data });
-      dispatch({ type: 'CALCULATE_TOTALS' });
-    } catch (error) {
-      dispatch({ type: 'SET_ERROR', payload: error.response?.data?.message || 'Error adding transaction' });
-    }
+    const newTransaction = { ...transaction, _id: Date.now().toString(), date: new Date().toISOString() };
+    dispatch({ type: 'ADD_TRANSACTION', payload: newTransaction });
+    dispatch({ type: 'CALCULATE_TOTALS' });
   };
 
   // Delete transaction
   const deleteTransaction = async (id) => {
-    try {
-      await api.delete(`/transactions/${id}`);
-      dispatch({ type: 'DELETE_TRANSACTION', payload: id });
-      dispatch({ type: 'CALCULATE_TOTALS' });
-    } catch (error) {
-      dispatch({ type: 'SET_ERROR', payload: error.response?.data?.message || 'Error deleting transaction' });
-    }
+    dispatch({ type: 'DELETE_TRANSACTION', payload: id });
+    dispatch({ type: 'CALCULATE_TOTALS' });
   };
 
   // Set budget goal
   const setGoal = async (category, amount) => {
-    try {
-      const res = await api.post('/budgets', { category, amount });
-      dispatch({ type: 'SET_GOAL', payload: res.data });
-    } catch (error) {
-      dispatch({ type: 'SET_ERROR', payload: error.response?.data?.message || 'Error setting goal' });
-    }
+    const newGoal = { _id: Date.now().toString(), category, amount };
+    dispatch({ type: 'SET_GOAL', payload: newGoal });
   };
 
   // Calculate category spending
@@ -161,7 +115,6 @@ export const TransactionProvider = ({ children }) => {
   const getCategoryProgress = (category) => {
     const goal = state.goals.find(g => g.category === category);
     if (!goal || goal.amount === 0) return 0;
-    
     const spent = getCategorySpent(category);
     return Math.min(Math.round((spent / goal.amount) * 100), 100);
   };

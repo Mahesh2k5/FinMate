@@ -203,61 +203,102 @@ function Budget() {
 
       <div className="budget-grid">
         <div className="budget-goal-card">
-          <h2>Set Your Budget Goals</h2>
-          <form onSubmit={handleSetGoal}>
-            <div className="form-group">
-              <label>Budget Amount</label>
-              <div className="budget-amount-row">
-                <input
-                  type="number"
-                  value={amount}
-                  onChange={(e) => setAmount(e.target.value)}
-                  placeholder="Enter amount"
-                  className="budget-amount-input"
-                />
+          <div className="goal-card-container">
+            <h2>Set Your Budget Goals</h2>
+            <form onSubmit={handleSetGoal}>
+              <div className="form-group">
+                <label>Budget Amount</label>
+                <div className="budget-amount-row">
+                  <input
+                    type="number"
+                    value={amount}
+                    onChange={(e) => setAmount(e.target.value)}
+                    placeholder="Enter amount"
+                    className="budget-amount-input"
+                  />
+                </div>
               </div>
-            </div>
-            
-            <div className="form-group">
-              <label>Category</label>
-              <div className="budget-categories">
-                {categories.map(cat => (
-                  <label 
-                    key={cat.name} 
-                    className="budget-radio"
-                    style={{ 
-                      backgroundColor: selectedCategory === cat.name ? cat.color : 'transparent',
-                      borderColor: cat.color
-                    }}
-                  >
-                    <input
-                      type="radio"
-                      value={cat.name}
-                      checked={selectedCategory === cat.name}
-                      onChange={() => setSelectedCategory(cat.name)}
-                    />
-                    {cat.name}
-                  </label>
-                ))}
+              
+              <div className="form-group">
+                <label>Category</label>
+                <div className="budget-categories">
+                  {categories.map(cat => (
+                    <label 
+                      key={cat.name} 
+                      className="budget-radio"
+                      style={{ 
+                        backgroundColor: selectedCategory === cat.name ? cat.color : 'transparent',
+                        borderColor: cat.color
+                      }}
+                    >
+                      <input
+                        type="radio"
+                        value={cat.name}
+                        checked={selectedCategory === cat.name}
+                        onChange={() => setSelectedCategory(cat.name)}
+                      />
+                      {cat.name}
+                    </label>
+                  ))}
+                </div>
               </div>
-            </div>
+              
+              <button className="set-goal-btn" type="submit">Set Goal</button>
+            </form>
             
-            <button className="set-goal-btn" type="submit">Set Goal</button>
-          </form>
-          
-          <div className="budget-summary">
-            <h3>Financial Summary</h3>
-            <div className="summary-item">
-              <span>Balance:</span>
-              <span className="amount">${balance.toFixed(2)}</span>
-            </div>
-            <div className="summary-item">
-              <span>Income:</span>
-              <span className="amount income">${income.toFixed(2)}</span>
-            </div>
-            <div className="summary-item">
-              <span>Expenses:</span>
-              <span className="amount expense">${expense.toFixed(2)}</span>
+              <div className="budget-summary">
+                <h3>Financial Summary</h3>
+                <div className="summary-item">
+                  <span>Balance:</span>
+                  <span className="amount">${balance.toFixed(2)}</span>
+                </div>
+                <div className="summary-item">
+                  <span>Income:</span>
+                  <span className="amount income">${income.toFixed(2)}</span>
+                </div>
+                <div className="summary-item">
+                  <span>Expenses:</span>
+                  <span className="amount expense">${expense.toFixed(2)}</span>
+                </div>
+              </div>
+          </div>
+
+          <div className="budget-insights-container">
+
+            <div className="budget-insights">
+              <div className="insights-header">
+                <h3><FaLightbulb /> Budget Insights</h3>
+                <button 
+                  className="alert-toggle"
+                  onClick={() => setShowAlerts(!showAlerts)}
+                >
+                  <FaBell />
+                </button>
+              </div>
+            
+              {showAlerts && (
+                <div className="recommendations-list">
+                  {recommendations.map((rec, index) => (
+                    <div 
+                      key={index} 
+                      className={`recommendation ${rec.type}`}
+                    >
+                      {rec.message}
+                    </div>
+                  ))}
+                </div>
+              )}
+            
+              <div className="budget-tips">
+                <h4>Tips to Stay Within Budget</h4>
+                <ul>
+                  <li>Track your daily expenses</li>
+                  <li>Set realistic budget goals</li>
+                  <li>Review your spending patterns regularly</li>
+                  <li>Look for areas to cut back</li>
+                  <li>Save for unexpected expenses</li>
+                </ul>
+              </div>
             </div>
           </div>
         </div>
@@ -302,42 +343,6 @@ function Budget() {
                 </div>
               );
             })}
-          </div>
-        </div>
-
-        <div className="budget-insights">
-          <div className="insights-header">
-            <h3><FaLightbulb /> Budget Insights</h3>
-            <button 
-              className="alert-toggle"
-              onClick={() => setShowAlerts(!showAlerts)}
-            >
-              <FaBell />
-            </button>
-          </div>
-          
-          {showAlerts && (
-            <div className="recommendations-list">
-              {recommendations.map((rec, index) => (
-                <div 
-                  key={index} 
-                  className={`recommendation ${rec.type}`}
-                >
-                  {rec.message}
-                </div>
-              ))}
-            </div>
-          )}
-          
-          <div className="budget-tips">
-            <h4>Tips to Stay Within Budget</h4>
-            <ul>
-              <li>Track your daily expenses</li>
-              <li>Set realistic budget goals</li>
-              <li>Review your spending patterns regularly</li>
-              <li>Look for areas to cut back</li>
-              <li>Save for unexpected expenses</li>
-            </ul>
           </div>
         </div>
       </div>
